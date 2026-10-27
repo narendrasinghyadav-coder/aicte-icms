@@ -37,6 +37,26 @@ const simulator = new Simulator({ db, engine, cases });
 const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 'loopback');
+
+// ---------- CORS configuration ----------
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
 app.use(express.json({ limit: '1mb' }));
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -61,7 +81,9 @@ bus.on('event', (evt) => {
   const payload = `event: update\ndata: ${JSON.stringify({ ...evt, at: new Date().toISOString() })}\n\n`;
   for (const c of clients) c.res.write(payload);
 });
-setInterval(() => { for (const c of clients) c.res.write(': ping\n\n'); }, 25000).unref();
+if (!process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  setInterval(() => { for (const c of clients) c.res.write(': ping\n\n'); }, 25000).unref();
+}
 
 // ---------- simulator controls (admin) ----------
 app.get('/api/simulator', auth, (_req, res) => res.json({ running: simulator.running, intervalMs: simulator.intervalMs }));
@@ -97,10 +119,16 @@ app.use((err, req, res, _next) => {
 });
 
 // Periodic sweep: SLA/pending alerts change with the calendar even when nobody acts.
-setInterval(() => engine.refreshAlerts(), 60_000).unref();
+if (!process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  setInterval(() => engine.refreshAlerts(), 60_000).unref();
+}
 engine.refreshAlerts({ emit: false });
 if (process.env.SIMULATE === '1') simulator.start();
 
-app.listen(PORT, () => {
-  console.log(`AICTE ICMS server on http://localhost:${PORT}  (db: ${DB_PATH})`);
-});
+if (!process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  app.listen(PORT, () => {
+    console.log(`AICTE ICMS server on http://localhost:${PORT}  (db: ${DB_PATH})`);
+  });
+}
+
+export default app;

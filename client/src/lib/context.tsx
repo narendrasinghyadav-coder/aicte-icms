@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, DEMO, getToken, setToken, setUnauthorizedHandler } from './api';
+import { api, API_BASE, DEMO, getToken, setToken, setUnauthorizedHandler } from './api';
 import type { Meta, User } from './types';
 
 // ---------------- Auth ----------------
@@ -104,7 +104,7 @@ export function LiveProvider({ children }: { children: ReactNode }) {
     let es: EventSource | null = null;
     let retry: number | undefined;
     const connect = () => {
-      es = new EventSource(`/api/events?token=${encodeURIComponent(getToken() || '')}`);
+      es = new EventSource(`${API_BASE}/api/events?token=${encodeURIComponent(getToken() || '')}`);
       es.addEventListener('hello', (e) => { setConnected(true); setSimulator(JSON.parse((e as MessageEvent).data).simulator); });
       es.addEventListener('update', (e) => onUpdate(JSON.parse((e as MessageEvent).data) as LiveEvent));
       es.onerror = () => { setConnected(false); es?.close(); retry = window.setTimeout(connect, 5000); };

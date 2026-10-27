@@ -5,6 +5,8 @@ const TOKEN_KEY = 'icms.token';
  * to the in-page server instead of the network. Everything else in the app is identical.
  */
 export const DEMO = import.meta.env.MODE === 'demo';
+export const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+
 type FetchInit = { method?: string; headers?: Record<string, string>; body?: BodyInit | null };
 async function apiFetch(url: string, init: FetchInit = {}): Promise<Response> {
   if (DEMO) {
@@ -36,7 +38,7 @@ export async function api<T = unknown>(path: string, opts: { method?: string; bo
   let body: BodyInit | undefined;
   if (opts.form) body = opts.form;
   else if (opts.body !== undefined) { headers['Content-Type'] = 'application/json'; body = JSON.stringify(opts.body); }
-  const res = await apiFetch(`/api${path}`, { method: opts.method || (body ? 'POST' : 'GET'), headers, body });
+  const res = await apiFetch(`${API_BASE}/api${path}`, { method: opts.method || (body ? 'POST' : 'GET'), headers, body });
   if (res.status === 401 && !path.startsWith('/auth/login')) onUnauthorized?.();
   const data = res.headers.get('content-type')?.includes('json') ? await res.json() : await res.text();
   if (!res.ok) throw new ApiError(res.status, (data as { error?: string })?.error || res.statusText);
@@ -53,7 +55,7 @@ export function qs(params: Record<string, string | number | boolean | undefined 
 
 /** Authenticated file download (CSV exports, documents). */
 export async function download(path: string, fallbackName = 'download') {
-  const res = await apiFetch(`/api${path}`, { headers: { Authorization: `Bearer ${getToken()}` } });
+  const res = await apiFetch(`${API_BASE}/api${path}`, { headers: { Authorization: `Bearer ${getToken()}` } });
   if (!res.ok) throw new ApiError(res.status, 'Download failed');
   const blob = await res.blob();
   const cd = res.headers.get('content-disposition') || '';
@@ -67,7 +69,7 @@ export async function download(path: string, fallbackName = 'download') {
 /** Open a case document in a new tab (fetched with the session token, so it works in both modes). */
 export async function openDocument(id: number) {
   const win = window.open('', '_blank');
-  const res = await apiFetch(`/api/documents/${id}`, { headers: { Authorization: `Bearer ${getToken()}` } });
+  const res = await apiFetch(`${API_BASE}/api/documents/${id}`, { headers: { Authorization: `Bearer ${getToken()}` } });
   if (!res.ok) { win?.close(); throw new ApiError(res.status, 'Document not available'); }
   const url = URL.createObjectURL(await res.blob());
   if (win) win.location.href = url; else window.location.href = url;
