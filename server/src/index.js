@@ -65,6 +65,15 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/', (_req, res) => res.json({
+  service: 'AICTE Integrated Complaint Monitoring System API',
+  status: 'running',
+  health: '/health',
+  api_health: '/api/health',
+  timestamp: new Date().toISOString(),
+}));
+
+app.get('/health', (_req, res) => res.json({ ok: true, status: 'healthy', time: new Date().toISOString() }));
 app.get('/api/health', (_req, res) => res.json({ ok: true, time: new Date().toISOString() }));
 
 // ---------- real-time stream (Server-Sent Events) ----------
