@@ -37,7 +37,7 @@ const ACTION_VERB: Record<string, string> = {
   DIRECTION: 'Direction', DISPOSE: 'Disposed', REOPEN: 'Reopened', LINKED: 'Linked', NOTE: 'Note', INSTITUTION_RESOLVED: 'Identified',
 };
 
-const firstName = (n?: string) => (n ?? '').replace(/^(Prof\.|Dr\.)\s*/, '').split(' ')[0];
+const firstName = (n?: string) => (n ?? '').replace(/^(Prof\.|Dr\.)\s*/, '');
 const shortNo = (no: string) => no.replace('AICTE/', '');
 
 /** Live IST clock, formatted like the reference ("10.29 am"). */

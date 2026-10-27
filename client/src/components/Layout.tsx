@@ -68,7 +68,7 @@ export default function Layout() {
             <Outlet />
           </main>
           <footer className="no-print px-6 pb-5 text-center text-[11px] text-muted">
-            {DEMO ? 'Live demo running in your browser · ' : 'Demo build · '}synthetic data: all institutions, officials and complaints are fictional · SIH 2026 · SIH26264 · Team Varangians
+            {DEMO ? 'Live demo running in your browser · ' : 'Demo build · '}synthetic data: all institutions, officials and complaints are fictional · SIH 2026 · SIH26264 · Team TechTroops
           </footer>
         </div>
       </div>
@@ -104,7 +104,7 @@ function Sidebar({ items, mobile, onClose }: { items: NavLeaf[]; mobile?: boolea
         <Link to="/cases/new" className="btn-raised flex items-center justify-between rounded-[4px] px-4 py-3 text-[10.5px] font-medium uppercase tracking-[0.18em]">
           New complaint <ArrowRight className="size-3.5" />
         </Link>
-        <div className="eyebrow text-[9.5px] text-muted">.SIH26264 · Team Varangians</div>
+        <div className="eyebrow text-[9.5px] text-muted">.SIH26264 · Team TechTroops</div>
       </div>
     </div>
   );

@@ -31,7 +31,7 @@ export default function Login() {
   return (
     <div className="flex min-h-screen items-center justify-center p-3 sm:p-8">
       <div className="w-full max-w-[1120px]">
-        <div className="eyebrow mb-3 flex justify-between px-1 text-ink-3"><span>.01 · Sign in</span><span>SIH26264 · Team Varangians</span></div>
+        <div className="eyebrow mb-3 flex justify-between px-1 text-ink-3"><span>.01 · Sign in</span><span>SIH26264 · Team TechTroops</span></div>
         <div className="grid overflow-hidden rounded-[10px] bg-main shadow-[var(--shell-shadow)] lg:grid-cols-[1.1fr_1fr]">
           <div className="relative hidden min-h-[560px] flex-col p-10 lg:flex">
             <div className="flex items-start justify-between">

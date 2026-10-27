@@ -229,7 +229,7 @@ export function seedDatabase(db, { hashPassword, saveDocument = () => {}, log = 
     users.push(u);
     return u;
   };
-  addUser('chairman', 'admin', null, null, 'Chairman (Competent Authority)', 'Prof. Raghavendra Menon');
+  addUser('chairman', 'admin', null, null, 'Chairman (Competent Authority)', 'Narendra Yadav');
   addUser('ms', 'admin', null, null, 'Member Secretary', 'Dr. Sunita Rathore');
   const OFFICERS = { RB: 4, PGRC: 4, AB: 2, ARC: 2, FB: 2, PAPB: 2 };
   for (const [b, n] of Object.entries(OFFICERS)) {
